@@ -142,6 +142,33 @@
   .status-strip ul { padding-left: 18px; margin-top: 6px; }
   .status-strip li { font-size: 13.5px; color: #4b5563; margin-bottom: 3px; }
 
+  /* ── PHASE 1 INVOICE ── */
+  .phase1-invoice {
+    background: #fff;
+    border: 1px solid #e8eaf0;
+    border-left: 4px solid #0065F7;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+  .phase1-invoice h3 {
+    font-family: 'Questrial', sans-serif;
+    font-size: 16px; color: #05024E; margin-bottom: 14px;
+  }
+  .invoice-rows { display: flex; flex-direction: column; }
+  .inv-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 13.5px; color: #374151;
+    padding: 8px 0; border-bottom: 1px solid #f4f5f7;
+  }
+  .inv-row strong { color: #05024E; font-weight: 600; font-size: 14px; }
+  .inv-row.total {
+    border-bottom: none; border-top: 1px solid #e8eaf0;
+    margin-top: 4px; padding-top: 14px;
+  }
+  .inv-row.total strong { font-size: 20px; color: #0065F7; font-family: 'Questrial', sans-serif; font-weight: 400; }
+  .invoice-note { font-size: 12.5px; color: #6b7280; margin-top: 14px; line-height: 1.55; }
+
   /* ── CONTEXT BOX ── */
   .context-box {
     background: #faf8ff;
@@ -357,6 +384,30 @@
         <li>Walkthrough fázy 1: <a href="https://www.loom.com/share/7042bcc9688141859d06334995215bde" target="_blank" rel="noopener">Loom video</a></li>
       </ul>
     </div>
+  </div>
+
+  <!-- PHASE 1 INVOICE -->
+  <div class="phase1-invoice">
+    <h3>Odovzdanie a fakturácia fázy 1</h3>
+    <div class="invoice-rows">
+      <div class="inv-row">
+        <span>Reálne odpracované</span>
+        <strong>94 h 59 min</strong>
+      </div>
+      <div class="inv-row">
+        <span>Prvých 80 hodín · 65 €/h</span>
+        <strong>5 200 €</strong>
+      </div>
+      <div class="inv-row">
+        <span>Zvyšných 14 h 59 min · 60 €/h</span>
+        <strong>899 €</strong>
+      </div>
+      <div class="inv-row total">
+        <span>Suma na faktúru</span>
+        <strong>6 099 €</strong>
+      </div>
+    </div>
+    <p class="invoice-note">Pôvodne dohodnutý prah pre zníženie sadzby na 60 €/h bol pri 100 hodinách. Aktivujeme ho už od 80. hodiny ako ústupok voči vám.</p>
   </div>
 
   <!-- CONTEXT -->
