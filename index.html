@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Prehľad scenárov | Dexfinity</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Questrial&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f5f7;
+    color: #1a1a2e;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── LOGIN GATE ── */
+  #gate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #05024E;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  #gate.hidden { display: none; }
+  #gate .gate-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 48px 40px;
+    max-width: 440px; width: 100%;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  #gate .gate-circle {
+    position: absolute; width: 240px; height: 240px;
+    border: 2px solid #0065F7;
+    border-radius: 50%; opacity: 0.08;
+    top: -100px; right: -80px;
+  }
+  #gate img { height: 56px; margin-bottom: 24px; }
+  #gate .gate-sub {
+    color: rgba(255,255,255,0.55); font-size: 13px;
+    margin-bottom: 28px;
+  }
+  #gate label {
+    display: block; text-align: left;
+    font-size: 11px; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin: 14px 0 6px;
+  }
+  #gate input {
+    width: 100%; padding: 12px 14px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: #fff; font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+  }
+  #gate input:focus { outline: none; border-color: #0065F7; }
+  #gate button {
+    width: 100%; margin-top: 24px;
+    padding: 14px; background: #0065F7;
+    color: #fff; border: none;
+    border-radius: 6px; font-weight: 600;
+    font-size: 15px; cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.2s;
+  }
+  #gate button:hover { background: #0052cc; }
+  #gate .gate-err {
+    color: #ff7f00; font-size: 13px;
+    margin-top: 16px; min-height: 20px;
+  }
+  #gate .gate-help {
+    margin-top: 24px; font-size: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+  #gate .gate-help a { color: #0065F7; text-decoration: none; }
+
+  #content { display: none; }
+  #content.visible { display: block; }
+
+  /* ── NAV ── */
+  nav {
+    background: #fff;
+    border-bottom: 1px solid #e8eaf0;
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  nav img { height: 36px; }
+  nav .nav-meta { font-size: 12px; color: #6b7280; letter-spacing: 0.02em; }
+  nav .nav-meta strong { color: #05024E; }
+
+  /* ── HERO ── */
+  .hero {
+    background: #05024E;
+    padding: 60px 40px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 2; }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #16AB8B; margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Questrial', sans-serif;
+    font-size: 34px; color: #fff; line-height: 1.25; margin-bottom: 16px;
+  }
+  .hero p { color: rgba(255,255,255,0.7); font-size: 15px; max-width: 580px; }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px; border-radius: 50%;
+    border: 60px solid rgba(255,255,255,0.06); z-index: 1;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -80px; right: 120px;
+    width: 200px; height: 200px; border-radius: 50%;
+    border: 40px solid rgba(0,101,247,0.1); z-index: 1;
+  }
+
+  /* ── MAIN ── */
+  .main { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── STATUS STRIP ── */
+  .status-strip {
+    background: #fff;
+    border: 1px solid #e8eaf0; border-left: 4px solid #16AB8B;
+    border-radius: 8px; padding: 20px 24px; margin-bottom: 28px;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .status-icon { font-size: 22px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .status-strip h3 {
+    font-family: 'Questrial', sans-serif; font-size: 16px; color: #05024E; margin-bottom: 6px;
+  }
+  .status-strip p { font-size: 13.5px; color: #4b5563; }
+  .status-strip ul { padding-left: 18px; margin-top: 6px; }
+  .status-strip li { font-size: 13.5px; color: #4b5563; margin-bottom: 3px; }
+
+  /* ── CONTEXT BOX ── */
+  .context-box {
+    background: #faf8ff;
+    border: 1px solid #e2d9f7; border-radius: 8px;
+    padding: 22px 24px; margin-bottom: 32px;
+  }
+  .context-box h3 {
+    font-family: 'Questrial', sans-serif; font-size: 15px; color: #05024E; margin-bottom: 10px;
+  }
+  .context-box p { font-size: 13.5px; color: #374151; margin-bottom: 8px; }
+  .context-box p:last-child { margin-bottom: 0; }
+  .context-box strong { color: #05024E; }
+
+  /* ── DECISION INTRO ── */
+  .decision-intro {
+    background: #fff; border: 1px solid #e8eaf0; border-radius: 8px;
+    padding: 20px 24px; margin-bottom: 28px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .decision-intro .ico { font-size: 20px; flex-shrink: 0; padding-top: 2px; }
+  .decision-intro p { font-size: 13.5px; color: #374151; }
+  .decision-intro strong { color: #05024E; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #9ca3af; margin-bottom: 14px; margin-top: 8px;
+  }
+
+  /* ── SCENARIO CARDS ── */
+  .scenario {
+    background: #fff; border: 1px solid #e8eaf0;
+    border-radius: 12px; padding: 28px; margin-bottom: 20px; position: relative;
+  }
+  .scenario.variant-b { border-color: #0065F7; border-width: 2px; }
+  .scenario.variant-a { border-color: #05024E; border-width: 2px; }
+  .scenario.variant-c { border-color: #d1d5db; background: #fafafa; }
+  .scenario.variant-c.not-pursued { opacity: 0.55; }
+  .scenario.variant-c.not-pursued h2,
+  .scenario.variant-c.not-pursued .tagline,
+  .scenario.variant-c.not-pursued .price-row,
+  .scenario.variant-c.not-pursued .price-note { text-decoration: line-through; text-decoration-color: #9ca3af; }
+  .not-pursued-banner {
+    background: #1f2937; color: #fff; border-radius: 8px; padding: 14px 18px;
+    margin-bottom: 18px; font-size: 14px; line-height: 1.55;
+  }
+  .not-pursued-banner strong { display: block; font-size: 12px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #fbbf24; margin-bottom: 4px; }
+
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 14px;
+  }
+  .badge.blue  { background: #0065F7; color: #fff; }
+  .badge.navy  { background: #05024E; color: #fff; }
+  .badge.grey  { background: #e5e7eb; color: #6b7280; }
+  .badge.teal  { background: #16AB8B; color: #fff; }
+
+  .scenario h2 {
+    font-family: 'Questrial', sans-serif; font-size: 22px; color: #05024E; margin-bottom: 6px;
+  }
+  .scenario.variant-c h2 { color: #6b7280; }
+  .scenario .tagline { font-size: 14px; color: #6b7280; margin-bottom: 20px; }
+
+  .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+  .price {
+    font-family: 'Questrial', sans-serif; font-size: 30px;
+    color: #05024E; font-weight: 400;
+  }
+  .scenario.variant-c .price { color: #9ca3af; font-size: 22px; }
+  .price-note { font-size: 13px; color: #9ca3af; margin-bottom: 20px; }
+
+  .divider { border: none; border-top: 1px solid #f0f1f4; margin: 20px 0; }
+
+  .scope-title {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #9ca3af; margin-bottom: 10px;
+  }
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+  .scope-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: #374151; }
+  .scope-item .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+  .dot.yes { background: #16AB8B; }
+  .dot.no  { background: #d1d5db; }
+  .scope-note {
+    margin-top: 14px; font-size: 13px; color: #6b7280;
+    background: #f9fafb; border-radius: 6px; padding: 12px 14px;
+  }
+
+  /* ── HOURS TABLE ── */
+  .hours-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 13.5px; }
+  .hours-table th {
+    text-align: left; font-weight: 600; color: #6b7280; font-size: 12px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 6px 10px; border-bottom: 1px solid #f0f1f4;
+  }
+  .hours-table td { padding: 8px 10px; border-bottom: 1px solid #f9fafb; color: #374151; }
+  .hours-table tr:last-child td { border-bottom: none; }
+  .hours-table .total td { font-weight: 600; color: #05024E; border-top: 1px solid #e8eaf0; }
+  .hours-table .done td { color: #9ca3af; }
+  .hours-table em { color: #ff7f00; font-style: normal; font-weight: 600; }
+
+  /* ── HANDOFF BOX ── */
+  .handoff-box {
+    margin-top: 16px; background: #f9fafb; border-radius: 8px; padding: 16px 18px;
+  }
+  .handoff-box p { font-size: 13px; color: #6b7280; margin-bottom: 8px; }
+  .handoff-box p:last-child { margin-bottom: 0; }
+  .handoff-box ul { padding-left: 18px; }
+  .handoff-box li { font-size: 13px; color: #6b7280; margin-bottom: 3px; }
+
+  /* ── INCLUDED BOX ── */
+  .included-box {
+    background: #fff; border: 1px solid #e8eaf0;
+    border-radius: 12px; padding: 24px 28px; margin-bottom: 20px;
+  }
+  .included-box h3 {
+    font-family: 'Questrial', sans-serif; font-size: 17px; color: #05024E; margin-bottom: 12px;
+  }
+  .included-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid #f4f5f7;
+    font-size: 13.5px; color: #374151;
+  }
+  .included-row:last-child { border-bottom: none; }
+  .included-row .ico { flex-shrink: 0; margin-top: 1px; }
+
+  /* ── NEXT STEP ── */
+  .next-step {
+    background: #05024E; border-radius: 12px; padding: 28px; color: #fff; margin-top: 32px;
+  }
+  .next-step h3 {
+    font-family: 'Questrial', sans-serif; font-size: 20px; margin-bottom: 10px;
+  }
+  .next-step p { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 6px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #05024E; padding: 32px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+  }
+  footer img { height: 40px; }
+  .footer-meta { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .footer-tagline {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.24em;
+    text-transform: uppercase; color: #0065F7;
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 12px 18px; }
+    .hero { padding: 40px 18px 36px; }
+    .hero h1 { font-size: 26px; }
+    .main { padding: 24px 16px 60px; }
+    .scope-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; padding: 24px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN GATE ===================== -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-circle"></div>
+    <img src="https://www.dexfinity.com/wp-content/uploads/2021/03/Logo-Small-Dark-Landscape@2x.png" alt="Dexfinity">
+    <p class="gate-sub">Prehľad scenárov od Dexfinity</p>
+    <label for="u">Užívateľské meno</label>
+    <input id="u" type="text" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <label for="p">Heslo</label>
+    <input id="p" type="password" autocomplete="current-password">
+    <button id="gateBtn">Otvoriť prehľad</button>
+    <div id="gateErr" class="gate-err"></div>
+    <div class="gate-help">
+      Stratili ste prístup? Napíšte na <a href="mailto:pavol.adamcak@dexfinity.com">pavol.adamcak@dexfinity.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CONTENT ===================== -->
+<div id="content">
+
+<!-- NAV -->
+<nav>
+  <img src="https://www.dexfinity.com/wp-content/uploads/2021/03/Logo-Small-Light-Landscape@2x.png" alt="Dexfinity">
+  <span class="nav-meta">Klient: <strong>Mamutex.cz</strong> &nbsp;·&nbsp; máj 2026</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">UX Redesign — Míľnik fázy 1</div>
+    <h1>Kde sme a čo ďalej</h1>
+    <p>Fáza 1 je uzavretá. Toto je prehľad toho, čo bolo dodané, a tri scenáre ďalšieho postupu. Rozhodnutie je na vás.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- STATUS: Phase 1 done -->
+  <div class="status-strip">
+    <div class="status-icon">✅</div>
+    <div>
+      <h3>Fáza 1 — Homepage je odovzdaná</h3>
+      <p>Všetky komentáre Honzu Kvasničku sú zapracované. Honza výsledok zhodnotil: <em>"super práce na této verzi, pěkně to prokouklo a za mě je to o parník lepší než ta původní varianta."</em></p>
+      <ul>
+        <li>Desktop a mobilná verzia, kompletný design system s variabilnými komponentmi</li>
+        <li>Nová brand typografia (Bricolage Grotesk), grafické prvky pre web aj kampane</li>
+        <li>Zapracované: benefity v pätičke, naposledy prezerané produkty, osobný odber, pop-up doprava, bundle</li>
+        <li>FigCheck systém — transparentná evidencia každého komentára a jeho stavu</li>
+        <li>Walkthrough fázy 1: <a href="https://www.loom.com/share/7042bcc9688141859d06334995215bde" target="_blank" rel="noopener">Loom video</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context-box">
+    <h3>Kontext, prečo sú čísla pre fázu 2 vyššie ako pôvodný rámec</h3>
+    <p>Pôvodný rámec budgetu bol nastavený ešte pred tým, ako sme detailne videli rozsah práce vo Figme a v UX briefe. Počas fázy 1 sa ukázalo, že projekt v sebe skrýva nielen UX redesign ale aj brand aktualizáciu a stavbu design systému od základov. Fáza 1 to potvrdila reálnymi hodinami.</p>
+    <p>Toto nie je prekročenie. Je to situácia, kde <strong>scope bol realisticky ocenený až po vstupe do projektu</strong>. Výsledok fázy 1 a hodnotenie od Honzu dáva dobrý základ pre rozhodnutie, ako pokračovať.</p>
+  </div>
+
+  <!-- DECISION FRAMING -->
+  <div class="decision-intro">
+    <div class="ico">🔀</div>
+    <p><strong>Tri možnosti ďalšieho postupu.</strong> Žiadna z nich nie je zlá. Fáza 1 je uzavretý a odovzdaný výsledok. Čo príde po nej závisí od vašich priorít a toho, čo má pre Mamutex najväčší zmysel teraz.</p>
+  </div>
+
+  <div class="section-label">Scenáre pokračovania</div>
+
+  <!-- ══════════════════════════════════
+       VARIANT B — CONVERSION CRITICAL
+  ══════════════════════════════════ -->
+  <div class="scenario variant-b">
+    <span class="badge blue">Scenár B — Konverzné jadro</span>
+    <h2>Detail produktu, nákupný proces a zoznam produktov</h2>
+    <p class="tagline">Tri sekcie s najväčším priamym dopadom na konverzie. Ďalší logický krok po homepage.</p>
+
+    <div class="price-row">
+      <span class="price">6 500 — 7 700 €</span>
+    </div>
+    <div class="price-note">108 až 128 hodín · 60 €/h na celú fázu · fakturácia podľa reálnych hodín</div>
+
+    <hr class="divider">
+
+    <div class="scope-title">Čo je súčasťou</div>
+    <table class="hours-table">
+      <thead><tr><th>Sekcia</th><th>Odhadovaný čas</th></tr></thead>
+      <tbody>
+        <tr><td>Detail produktu (desktop + mobil)</td><td>~32 hodín</td></tr>
+        <tr><td>Nákupný proces — košík, checkout (desktop + mobil)</td><td>~34 hodín</td></tr>
+        <tr><td>Zoznam produktov a filtrovanie</td><td>~28 hodín</td></tr>
+        <tr><td>PM, mobilné adaptácie, klientske iterácie</td><td>~14 až 34 hodín</td></tr>
+        <tr class="total"><td>Spolu</td><td>108 až 128 hodín</td></tr>
+      </tbody>
+    </table>
+
+    <div class="scope-note">
+      Rovnaká kvalita a metodika ako fáza 1. Všetky komentáre Honzu k týmto sekciám budú zapracované. Výstup uvidíte po dodaní a až potom sa rozhodujete, či pokračujete ďalej. Ostatné sekcie (vyhľadávanie, blog, zákaznícky účet) ostávajú na neskôr alebo na samostatné riešenie.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       VARIANT A — FULL REDESIGN
+  ══════════════════════════════════ -->
+  <div class="scenario variant-a">
+    <span class="badge navy">Scenár A — Kompletný redizajn</span>
+    <h2>Všetky kľúčové sekcie e-shopu</h2>
+    <p class="tagline">Celý redizajn v rovnakej kvalite ako homepage. Definitívne uzavretie projektu.</p>
+
+    <div class="price-row">
+      <span class="price">13 200 — 15 600 €</span>
+    </div>
+    <div class="price-note">220 až 260 hodín · 60 €/h na celú fázu · rozloženie platieb podľa míľnikov</div>
+
+    <hr class="divider">
+
+    <div class="scope-title">Celkový rozsah projektu</div>
+    <table class="hours-table">
+      <thead><tr><th>Sekcia</th><th>Odhadovaný čas</th></tr></thead>
+      <tbody>
+        <tr class="done"><td>Homepage (fáza 1 — odovzdaná)</td><td>hotové ✓</td></tr>
+        <tr><td>Detail produktu</td><td>~32 hodín</td></tr>
+        <tr><td>Nákupný proces</td><td>~34 hodín</td></tr>
+        <tr><td>Zoznam produktov a filtrovanie</td><td>~28 hodín</td></tr>
+        <tr><td>Vyhľadávanie, obsahové stránky, blog <em>(odložené na neskôr)</em></td><td>~52 hodín</td></tr>
+        <tr><td>Zákaznícky účet <em>(odložené na neskôr)</em></td><td>~28 hodín</td></tr>
+        <tr class="total"><td>PM, mobilné adaptácie, iterácie (zostatok) <em>(odložené na neskôr)</em></td><td>~46 hodín</td></tr>
+      </tbody>
+    </table>
+
+    <div class="scope-note">
+      <p><strong>Vyhľadávanie, obsahové stránky a blog</strong> sa dajú riešiť aj neskôr a inou cestou. Buď napojením na partnera typu Luigibox alebo iný systém na inteligentné vyhľadávanie. V tom prípade sa dizajn už len ladí podľa toolu. Druhá možnosť je zapojiť lacnejšieho dizajnéra, pretože má všetko definované v design systéme z fázy 1, podľa čoho má pracovať.</p>
+      <p>Zákaznícky účet (~28h) je voliteľný. Ak ho nechcete teraz riešiť, odpadne z rozsahu aj z ceny.</p>
+      <p>Platby vieme rozdeliť po sekciách podľa cashflow.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       VARIANT C — EXIT AFTER PHASE 1
+  ══════════════════════════════════ -->
+  <div class="scenario variant-c not-pursued">
+    <div class="not-pursued-banner">
+      <strong>Neideme realizovať</strong>
+      Po spoločnom calle sme sa zhodli, že pokračujeme so Scenárom B. Pre odložené sekcie (vyhľadávanie, obsahové stránky a blog, zákaznícky účet) zvažujeme zapojenie iného dizajnéra, ktorý nadviaže na existujúce výstupy a design system z fázy 1.
+    </div>
+    <span class="badge grey">Scenár C — Ukončenie po fáze 1</span>
+    <h2>Akceptovať fázu 1 ako míľnik</h2>
+    <p class="tagline">Fáza 1 je samostatný uzavretý výsledok. Fázu 2 môžete zadať inému dodávateľovi alebo riešiť neskôr.</p>
+
+    <div class="price-row">
+      <span class="price">Bez ďalšieho záväzku</span>
+    </div>
+    <div class="price-note">Fáza 1 bude vyúčtovaná samostatne. Ďalšia práca pre vás ani záväzok z našej strany nevzniká.</div>
+
+    <hr class="divider">
+
+    <div class="scope-title">Čo dostanete pri odovzdaní</div>
+    <div class="scope-grid">
+      <div class="scope-item"><span class="dot yes"></span><span>Homepage desktop a mobilná verzia</span></div>
+      <div class="scope-item"><span class="dot yes"></span><span>Kompletný design system (komponenty, farby, typografia)</span></div>
+      <div class="scope-item"><span class="dot yes"></span><span>Nová brand typografia a grafické prvky</span></div>
+      <div class="scope-item"><span class="dot yes"></span><span>FigCheck — evidencia všetkých komentárov a rozhodnutí</span></div>
+      <div class="scope-item"><span class="dot yes"></span><span>Figma súbory pripravené na odovzdanie</span></div>
+      <div class="scope-item"><span class="dot yes"></span><span>Podklad pre vývojárov alebo ďalšieho dizajnéra</span></div>
+    </div>
+
+    <div class="handoff-box">
+      <p>Design system a komponenty z fázy 1 sú postavené tak, aby na nich mohol nadviazať iný dizajnér alebo vývojový tím. Odovzdáme kompletný Figma súbor vrátane anotácií a FigCheck exportu.</p>
+      <p>Ak sa rozhodnete pokračovať s iným dodávateľom neskôr, alebo projekt na nejaký čas pozastaviť, je to legitímna možnosť. Fáza 1 stojí sama o sebe.</p>
+    </div>
+  </div>
+
+  <!-- WHAT WE ABSORB -->
+  <div class="included-box">
+    <h3>Čo nie je vo fakturácii</h3>
+    <div class="included-row">
+      <span class="ico">⏱</span>
+      <span>30 až 40 hodín projektového vedenia, čítania 800+ UX komentárov a vývoja FigCheck systému <strong>nie je fakturovaných</strong>. Berieme ich na seba bez ohľadu na to, ktorý scenár si vyberiete.</span>
+    </div>
+    <div class="included-row">
+      <span class="ico">📅</span>
+      <span>Pri Scenári A alebo B vieme fakturáciu rozložiť podľa vášho cashflow. Nie je nutné platiť celú fázu naraz.</span>
+    </div>
+    <div class="included-row">
+      <span class="ico">📋</span>
+      <span>FigCheck systém na transparentné sledovanie komentárov zostáva plne funkčný a je súčasťou odovzdania pri každom scenári.</span>
+    </div>
+  </div>
+
+  <!-- NEXT STEP -->
+  <div class="next-step">
+    <h3>Ako ďalej</h3>
+    <p>Po spoločnom calle sme sa zhodli na pokračovaní fázy 2 podľa <strong>Scenára B</strong>.</p>
+    <p>Aktuálne riešime, ako čisto dokončiť celú fázu 2 a chýbajúce časti zo Scenára A optimalizovať zapojením iného grafika, ktorý nadviaže na existujúce výstupy a design system z fázy 1.</p>
+    <p style="margin-top:14px; color: rgba(255,255,255,0.5); font-size:13px;">Ďalší krok dohodíme na nasledujúcom calle.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="https://www.dexfinity.com/wp-content/uploads/2021/03/Logo-Small-Dark-Landscape@2x.png" alt="Dexfinity">
+  <span class="footer-tagline">Go Beyond</span>
+  <span class="footer-meta">Dexfinity s.r.o. &nbsp;·&nbsp; máj 2026</span>
+</footer>
+
+</div><!-- /#content -->
+
+<script>
+// ---------- LOGIN GATE ----------
+(function() {
+  var EXPECTED_USER = "Mamutex";
+  var EXPECTED_PASS = "redizajn2026";
+  var STORAGE_KEY = "dex-scenare-mamutex";
+
+  function unlock() {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('content').classList.add('visible');
+    try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch(e) {}
+  }
+
+  function checkUrl() {
+    var qs = new URLSearchParams(window.location.search);
+    if (qs.get('u') === EXPECTED_USER && qs.get('p') === EXPECTED_PASS) {
+      unlock();
+      return true;
+    }
+    return false;
+  }
+
+  function checkSession() {
+    try {
+      if (sessionStorage.getItem(STORAGE_KEY) === "1") { unlock(); return true; }
+    } catch(e) {}
+    return false;
+  }
+
+  function trySubmit() {
+    var u = document.getElementById('u').value.trim();
+    var p = document.getElementById('p').value;
+    var err = document.getElementById('gateErr');
+    if (u === EXPECTED_USER && p === EXPECTED_PASS) {
+      err.textContent = '';
+      unlock();
+    } else {
+      err.textContent = 'Nesprávne údaje. Skontrolujte e-mail s prístupom alebo nás kontaktujte.';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (checkUrl() || checkSession()) return;
+    document.getElementById('gateBtn').addEventListener('click', trySubmit);
+    ['u','p'].forEach(function(id){
+      document.getElementById(id).addEventListener('keypress', function(e){
+        if (e.key === 'Enter') trySubmit();
+      });
+    });
+    document.getElementById('u').focus();
+  });
+})();
+</script>
+
+</body>
+</html>
